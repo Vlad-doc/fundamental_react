@@ -1,7 +1,4 @@
 import React, { useState } from "react"
-import ClassCounter from "./components/class-counter"
-import { Counter } from "./components/counter"
-import PostItem from "./components/post-item"
 import PostList from "./components/post-list"
 import MyButton from "./components/UI/button/my-button"
 import MyInput from "./components/UI/input/my-input"
@@ -13,13 +10,33 @@ function App() {
     { id: 2, title: "Javascript 2", body: "Description" },
     { id: 3, title: "Javascript 3", body: "Description" },
   ])
+  const [post, setPost] = useState({
+    id: new Date(),
+    title: "",
+    body: "",
+  })
+
+  const addNewPost = (event) => {
+    event.preventDefault()
+    setPosts()
+  }
 
   return (
     <div className="app">
       <form>
-        <MyInput type="text" placeholder="Название поста" />
-        <MyInput type="text" placeholder="Описание поста" />
-        <MyButton disabled>Создать пост</MyButton>
+        <MyInput
+          type="text"
+          placeholder="Название поста"
+          value={post.title}
+          onChange={(event) => setPost({ ...post, title: event.target.value })}
+        />
+        <MyInput
+          type="text"
+          placeholder="Описание поста"
+          value={post.body}
+          onChange={(event) => setPost({ ...post, body: event.target.value })}
+        />
+        <MyButton onClick={addNewPost}>Создать пост</MyButton>
       </form>
       <PostList posts={posts} title={"Посты про JS"} />
     </div>
