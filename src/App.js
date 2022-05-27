@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react"
+import PostFilter from "./components/post-filter"
 import PostForm from "./components/post-form"
 import PostList from "./components/post-list"
 import MyInput from "./components/UI/input/my-input"
@@ -12,23 +13,22 @@ function App() {
     { id: 3, title: "Javascript 3", body: "Description" },
   ])
 
-  const [selectedSort, setSelectedSort] = useState("")
-  const [searchQuerry, setSearchQuerry] = useState("")
+  const [filter, setFilter] = useState({ sort: "", querry: "" })
 
   const sortedPosts = useMemo(() => {
-    if (selectedSort) {
+    if (filter.sort) {
       return [...posts].sort((a, b) =>
-        a[selectedSort].localeCompare(b[selectedSort]),
+        a[filter.sort].localeCompare(b[filter.sort]),
       )
     }
     return posts
-  }, [selectedSort, posts])
+  }, [filter.sort, posts])
 
   const sortedAndSearchedPosts = useMemo(() => {
     return sortedPosts.filter((post) =>
-      post.title.toLocaleLowerCase().includes(searchQuerry),
+      post.title.toLocaleLowerCase().includes(filter.querry),
     )
-  }, [searchQuerry, sortedPosts])
+  }, [filter.querry, sortedPosts])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
@@ -38,28 +38,11 @@ function App() {
     setPosts(posts.filter((p) => p.id !== post.id))
   }
 
-  const sortPosts = (sort) => {
-    setSelectedSort(sort)
-  }
-
   return (
     <div className="app">
       <PostForm create={createPost} />
       <hr style={{ margin: "15px 0" }} />
-      <MyInput
-        placeholder="Поиск..."
-        value={searchQuerry}
-        onChange={(event) => setSearchQuerry(event.target.value)}
-      />
-      <MySelect
-        defaultValue={"Сортировка"}
-        options={[
-          { value: "title", name: "По названию" },
-          { value: "body", name: "По описанию" },
-        ]}
-        value={selectedSort}
-        onChange={sortPosts}
-      />
+      <PostFilter filter={filter} setFilter={setFilter} />
       {sortedAndSearchedPosts.length ? (
         <PostList
           posts={sortedAndSearchedPosts}
