@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import PostForm from "./components/post-form"
 import PostList from "./components/post-list"
+import MySelect from "./components/UI/select/my-select"
 import "./styles/app.css"
 
 function App() {
@@ -10,6 +11,8 @@ function App() {
     { id: 3, title: "Javascript 3", body: "Description" },
   ])
 
+  const [selectedSort, setSelectedSort] = useState("")
+
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
   }
@@ -18,10 +21,29 @@ function App() {
     setPosts(posts.filter((p) => p.id !== post.id))
   }
 
+  const sortPosts = (sort) => {
+    setSelectedSort(sort)
+    setPosts([...posts].sort((a, b) => a[sort].localeCompare(b[sort])))
+  }
+
   return (
     <div className="app">
       <PostForm create={createPost} />
-      <PostList posts={posts} title={"Посты про JS"} remove={removePost} />
+      <hr style={{ margin: "15px 0" }} />
+      <MySelect
+        defaultValue={"Сортировка"}
+        options={[
+          { value: "title", name: "По названию" },
+          { value: "body", name: "По описанию" },
+        ]}
+        value={selectedSort}
+        onChange={sortPosts}
+      />
+      {posts.length ? (
+        <PostList posts={posts} title={"Посты про JS"} remove={removePost} />
+      ) : (
+        <h1 style={{ textAlign: "center" }}>Посты не найдены!</h1>
+      )}
     </div>
   )
 }
