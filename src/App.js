@@ -6,6 +6,7 @@ import PostList from "./components/post-list"
 import MyButton from "./components/UI/button/my-button"
 import Loader from "./components/UI/loader/loader"
 import MyModal from "./components/UI/modal/my-modal"
+import Pagination from "./components/UI/pagination/pagination"
 import { useFetching } from "./hooks/useFetching"
 import { usePosts } from "./hooks/usePosts"
 import "./styles/app.css"
@@ -26,11 +27,13 @@ function App() {
   })
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.querry)
 
-  let pagesArray = getPagesArray(totalPages)
+  const changePage = (page) => {
+    setPage(page)
+  }
 
   useEffect(() => {
     fetchPosts()
-  }, [])
+  }, [page])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost])
@@ -70,17 +73,7 @@ function App() {
           remove={removePost}
         />
       )}
-      <div className="page__wrapper">
-        {pagesArray.map((p) => (
-          <span
-            onClick={() => setPage(p)}
-            key={p}
-            className={page === p ? "page page__current" : "page"}
-          >
-            {p}
-          </span>
-        ))}
-      </div>
+      <Pagination page={page} changePage={changePage} totalPages={totalPages} />
     </div>
   )
 }
