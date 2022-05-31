@@ -14,11 +14,15 @@ function App() {
   const [posts, setPosts] = useState([])
   const [filter, setFilter] = useState({ sort: "", querry: "" })
   const [modal, setModal] = useState(false)
-  const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.querry)
+  const [totalCount, setTotalCount] = useState(0)
+  const [limit, setLimit] = useState(10)
+  const [page, setPage] = useState(1)
   const [fetchPosts, isPostLoading, postError] = useFetching(async () => {
-    const posts = await PostService.getAll()
-    setPosts(posts)
+    const response = await PostService.getAll(limit, page)
+    setPosts(response.data)
+    setTotalCount(response.headers["x-total-count"])
   })
+  const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.querry)
 
   useEffect(() => {
     fetchPosts()
