@@ -9,18 +9,20 @@ import MyModal from "./components/UI/modal/my-modal"
 import { useFetching } from "./hooks/useFetching"
 import { usePosts } from "./hooks/usePosts"
 import "./styles/app.css"
+import { getPageCount } from "./utils/pages"
 
 function App() {
   const [posts, setPosts] = useState([])
   const [filter, setFilter] = useState({ sort: "", querry: "" })
   const [modal, setModal] = useState(false)
-  const [totalCount, setTotalCount] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   const [limit, setLimit] = useState(10)
   const [page, setPage] = useState(1)
   const [fetchPosts, isPostLoading, postError] = useFetching(async () => {
     const response = await PostService.getAll(limit, page)
     setPosts(response.data)
-    setTotalCount(response.headers["x-total-count"])
+    const totalCount = response.headers["x-total-count"]
+    setTotalPages(getPageCount(totalCount, limit))
   })
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.querry)
 
