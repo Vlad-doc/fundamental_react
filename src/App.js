@@ -9,7 +9,7 @@ import MyModal from "./components/UI/modal/my-modal"
 import { useFetching } from "./hooks/useFetching"
 import { usePosts } from "./hooks/usePosts"
 import "./styles/app.css"
-import { getPageCount } from "./utils/pages"
+import { getPageCount, getPagesArray } from "./utils/pages"
 
 function App() {
   const [posts, setPosts] = useState([])
@@ -25,6 +25,8 @@ function App() {
     setTotalPages(getPageCount(totalCount, limit))
   })
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.querry)
+
+  let pagesArray = getPagesArray(totalPages)
 
   useEffect(() => {
     fetchPosts()
@@ -68,6 +70,17 @@ function App() {
           remove={removePost}
         />
       )}
+      <div className="page__wrapper">
+        {pagesArray.map((p) => (
+          <span
+            onClick={() => setPage(p)}
+            key={p}
+            className={page === p ? "page page__current" : "page"}
+          >
+            {p}
+          </span>
+        ))}
+      </div>
     </div>
   )
 }
