@@ -4,9 +4,9 @@ import { AuthContext } from "../../../context"
 import MyButton from "../button/my-button"
 
 function Navbar() {
-  const { setisAuth } = useContext(AuthContext)
+  const { setIsAuth } = useContext(AuthContext)
   const logout = () => {
-    setisAuth(false)
+    setIsAuth(false)
     localStorage.removeItem("auth")
   }
   return (
